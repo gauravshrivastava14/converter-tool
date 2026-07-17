@@ -1,5 +1,5 @@
 flask
-pywin32
+
 openpyxl
 pymupdf
 python-pptx
