@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDFSetu</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body data-tool-id="ppt-to-excel">
+
+<nav class="navbar">
+  <a href="/" class="logo"><span class="icon">📄</span>PDF<span class="setu">Setu</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <div class="nav-dropdown" tabindex="0">
+      <button type="button" class="nav-dropdown-btn">Convert Tools <span class="caret">&#9660;</span></button>
+      <div class="nav-dropdown-menu" id="navToolsMenu"></div>
+    </div>
+    <a href="#privacy">Privacy</a>
+  </div>
+</nav>
+
+<div id="top"></div>
+<section class="hero">
+  <h1 id="heroTitle"></h1>
+  <p class="tagline" id="heroTagline"></p>
+
+  <div class="dropzone" id="dropzone">
+    <button type="button" class="select-btn" id="selectBtnLabel"></button>
+    <p class="hint" id="dropHint"></p>
+  </div>
+  <input type="file" id="fileInput" multiple>
+</section>
+
+<div class="drag-overlay" id="dragOverlay">
+  <div class="drag-overlay-inner">📄 Drop your files anywhere on this page</div>
+</div>
+
+<div class="workspace">
+  <div class="file-list panel" id="fileListPanel">
+    <div id="fileList"></div>
+    <div class="actions" id="actions">
+      <button class="btn btn-primary" id="convertBtn">Convert All</button>
+      <button class="btn btn-ghost" id="clearBtn">Clear</button>
+    </div>
+  </div>
+
+  <div class="progress-panel panel" id="progressPanel">
+    <div class="progress-icon" id="progressIcon"><div class="progress-spin-ring"></div></div>
+    <div class="progress-message" id="progressMessage">Converting your files&hellip;</div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-percent" id="progressPercent">0 / 0 files converted (0%)</div>
+  </div>
+
+  <div class="error-banner" id="errorBanner"></div>
+
+  <div class="results panel" id="results">
+    <h2>Converted Files</h2>
+    <div id="resultList"></div>
+    <div class="zip-wrap" id="zipWrap"></div>
+  </div>
+</div>
+
+<section class="features" id="how">
+  <div class="feature">
+    <div class="emoji">⚡</div>
+    <h3>Batch &amp; Fast</h3>
+    <p>Pick as many files as you like &mdash; they convert one after another, right in your browser.</p>
+  </div>
+  <div class="feature">
+    <div class="emoji">🔒</div>
+    <h3>Private by Design</h3>
+    <p>Nothing is uploaded anywhere &mdash; every file is processed locally, in this browser tab.</p>
+  </div>
+</section>
+
+<footer id="privacy">PDFSetu &middot; Runs entirely in your browser &middot; No sign-up, no uploads, no limits</footer>
+
+<script type="module" src="/assets/bootstrap.js"></script>
+</body>
+</html>

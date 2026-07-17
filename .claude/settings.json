@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sI https://esm.sh/pdfjs-dist)",
+      "Bash(curl -s https://registry.npmjs.org/pdfmake)",
+      "Bash(node -e ' *)",
+      "Bash(curl -sI \"https://esm.sh/pdfjs-dist@6.1.200/build/pdf.worker.min.mjs\")",
+      "Bash(curl -sI \"https://esm.sh/pdfjs-dist@6.1.200/build/pdf.worker.mjs\")",
+      "Bash(curl -sI \"https://unpkg.com/pdfjs-dist@6.1.200/build/pdf.worker.min.mjs\")",
+      "Bash(cp index.html word-to-pdf/index.html)",
+      "Bash(sed 's/data-tool-id=\"word-to-pdf\"/data-tool-id=\"pdf-to-word\"/' index.html)",
+      "Bash(sed 's/data-tool-id=\"word-to-pdf\"/data-tool-id=\"pdf-to-ppt\"/' index.html)",
+      "Bash(sed 's/data-tool-id=\"word-to-pdf\"/data-tool-id=\"ppt-to-excel\"/' index.html)",
+      "Bash(xargs -I{} sh -c 'echo {}: $\\(grep -o \"data-tool-id=\\\\\"[a-z-]*\\\\\"\" {}\\)')",
+      "Bash(python -c \"import docx, pptx, fitz; print\\('deps ok'\\)\")",
+      "Bash(mkdir -p /c/gaurav_data/pdfconverter/static-site-test-fixtures)",
+      "Bash(python3)",
+      "Bash(python -c \"print\\('hi'\\)\")",
+      "Bash(python)",
+      "Bash(echo \"exit code: $?\")",
+      "Bash(echo \"exit: $?\")",
+      "Read(//c/Users/GENZ~1/AppData/Local/Temp/claude/c--gaurav-data-pdfconverter/e7bdffd5-21e0-484b-aa7b-d21a1c16e570/scratchpad/pw-test/**)",
+      "Bash(rm -f downloads/*)",
+      "Bash(node test.js)"
+    ]
+  }
+}
