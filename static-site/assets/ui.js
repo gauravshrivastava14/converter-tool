@@ -22,6 +22,7 @@ export function initToolPage({ tool, convert }) {
   const progressFill   = document.getElementById('progressFill');
   const progressPercent = document.getElementById('progressPercent');
   const dragOverlay    = document.getElementById('dragOverlay');
+  const toolOptions    = document.getElementById('toolOptions');
 
   const SPIN_RING_HTML = '<div class="progress-spin-ring"></div>';
   const TICK_SVG_HTML = `
@@ -134,6 +135,13 @@ export function initToolPage({ tool, convert }) {
     objectUrls = [];
   }
 
+  function getOptionValues() {
+    const opts = {};
+    if (!toolOptions) return opts;
+    toolOptions.querySelectorAll('[data-opt-id]').forEach(el => { opts[el.dataset.optId] = el.value; });
+    return opts;
+  }
+
   convertBtn.addEventListener('click', async () => {
     if (!selectedFiles.length) return;
     errorBanner.style.display = 'none';
@@ -151,9 +159,10 @@ export function initToolPage({ tool, convert }) {
 
     const results = [];
     const outputs = []; // { name, blob } for successful conversions, used by the zip button
+    const opts = getOptionValues();
 
     for (const file of selectedFiles) {
-      const outputName = baseName(file.name) + tool.output_ext;
+      const outputName = baseName(file.name) + (tool.output_suffix || '') + tool.output_ext;
       if (file.size > MAX_FILE_BYTES) {
         results.push({
           original: file.name, ok: false, output: null,
@@ -161,7 +170,7 @@ export function initToolPage({ tool, convert }) {
         });
       } else {
         try {
-          const blob = await convert(file);
+          const blob = await convert(file, opts);
           const uniqueName = uniqueOutputName(outputName, outputs);
           outputs.push({ name: uniqueName, blob });
           results.push({ original: file.name, ok: true, output: uniqueName, error: null });

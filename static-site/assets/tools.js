@@ -4,41 +4,143 @@ export const TOOLS = {
     hero_title: "Word to PDF",
     tagline: "Select multiple Word documents and convert them all to PDF in one go " +
              "&mdash; fast, free, and entirely in your browser. Your files never leave your device.",
+    short_desc: "Turn Word documents into polished, share-ready PDFs.",
     input_exts: [".docx", ".docm"],
     output_ext: ".pdf",
+    from_fmt: "docx",
+    to_fmt: "pdf",
     button_label: "Select Word Files",
     drop_hint: "or drop .docx / .docm files here &mdash; multiple allowed",
+    meta_description: "Convert Word documents (.docx) to PDF for free, right in your browser. No uploads, no sign-up, no limits.",
   },
   "pdf-to-word": {
     label: "PDF to Word",
     hero_title: "PDF to Word",
     tagline: "Extracts the text from each page and rebuilds it as an editable Word " +
              "document &mdash; convert as many at once as you like, entirely in your browser.",
+    short_desc: "Unlock PDF text into a fully editable Word document.",
     input_exts: [".pdf"],
     output_ext: ".docx",
+    from_fmt: "pdf",
+    to_fmt: "docx",
     button_label: "Select PDF Files",
     drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Convert PDF files to editable Word documents (.docx) for free, right in your browser. No uploads, no sign-up, no limits.",
   },
   "pdf-to-ppt": {
     label: "PDF to PPT",
     hero_title: "PDF to PPT",
     tagline: "Turn each PDF page into a PowerPoint slide &mdash; every page is placed as " +
              "a full-slide image, so the layout matches the PDF exactly.",
+    short_desc: "Drop every PDF page straight onto its own PowerPoint slide.",
     input_exts: [".pdf"],
     output_ext: ".pptx",
+    from_fmt: "pdf",
+    to_fmt: "pptx",
     button_label: "Select PDF Files",
     drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Convert PDF pages to PowerPoint slides (.pptx) for free, right in your browser. No uploads, no sign-up, no limits.",
   },
   "ppt-to-excel": {
     label: "PPT to Excel",
     hero_title: "PPT to Excel",
     tagline: "Extract the text from every slide into an Excel sheet &mdash; one row per " +
              "slide, with its title and content in separate columns.",
+    short_desc: "Pull every slide's text into a tidy Excel spreadsheet.",
     input_exts: [".pptx", ".pptm"],
     output_ext: ".xlsx",
+    from_fmt: "pptx",
+    to_fmt: "xlsx",
     button_label: "Select PPT Files",
     drop_hint: "or drop .pptx / .pptm files here &mdash; multiple allowed",
+    meta_description: "Convert PowerPoint slides (.pptx) to an Excel spreadsheet for free, right in your browser. No uploads, no sign-up, no limits.",
   },
+  "merge-pdf": {
+    label: "Merge PDF",
+    hero_title: "Merge PDF",
+    tagline: "Combine any number of PDFs into a single file &mdash; drag files into the order " +
+             "you want before merging, entirely in your browser.",
+    short_desc: "Combine PDFs into one file, reordering them first.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    from_fmt: "pdf",
+    to_fmt: "merge",
+    button_label: "Select PDF Files",
+    drop_hint: "or drop 2+ .pdf files here",
+    meta_description: "Merge multiple PDF files into one, in the order you choose, for free, right in your browser. No uploads, no sign-up, no limits.",
+    custom: true,
+  },
+  "split-pdf": {
+    label: "Split PDF",
+    hero_title: "Split PDF",
+    tagline: "Break a PDF into individual pages, or pull out exactly the pages you need with " +
+             "custom ranges &mdash; entirely in your browser.",
+    short_desc: "Split into single pages, or pick your own page ranges.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    from_fmt: "pdf",
+    to_fmt: "split",
+    button_label: "Select a PDF File",
+    drop_hint: "or drop a single .pdf file here",
+    meta_description: "Split a PDF into individual pages or custom page ranges for free, right in your browser. No uploads, no sign-up, no limits.",
+    custom: true,
+  },
+  "rotate-pdf": {
+    label: "Rotate PDF",
+    hero_title: "Rotate PDF",
+    tagline: "Rotate every page of your PDFs by 90&deg;, 180&deg;, or 270&deg; " +
+             "&mdash; batch as many files as you like, entirely in your browser.",
+    short_desc: "Fix sideways or upside-down PDF pages in seconds.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    output_suffix: "-rotated",
+    from_fmt: "pdf",
+    to_fmt: "rotate",
+    button_label: "Select PDF Files",
+    drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Rotate PDF pages 90, 180, or 270 degrees for free, right in your browser. No uploads, no sign-up, no limits.",
+    options: [
+      {
+        id: "angle", label: "Rotate by", default: "90",
+        choices: [
+          { value: "90", label: "90° clockwise" },
+          { value: "180", label: "180°" },
+          { value: "270", label: "90° counter-clockwise" },
+        ],
+      },
+    ],
+  },
+  "compress-pdf": {
+    label: "Compress PDF",
+    hero_title: "Compress PDF",
+    tagline: "Rebuilds each PDF with a de-duplicated, optimized internal structure to shrink " +
+             "file size losslessly &mdash; entirely in your browser.",
+    short_desc: "Shrink PDF file size losslessly, safe for every file.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    output_suffix: "-compressed",
+    from_fmt: "pdf",
+    to_fmt: "compress",
+    button_label: "Select PDF Files",
+    drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Compress PDF files to reduce size for free, right in your browser. No uploads, no sign-up, no limits.",
+  },
+};
+
+// Colors double as each tool card's format badges - kept close to each
+// program's real brand color so the pairing reads instantly (e.g. Word blue).
+// The action tools (merge/split/rotate/compress) reuse the same badge slot
+// with a verb instead of a second format, so tool cards stay visually
+// consistent without special-casing their layout.
+export const FORMATS = {
+  docx: { label: "DOCX", color: "#2b7de9" },
+  pdf:  { label: "PDF",  color: "#e5322d" },
+  pptx: { label: "PPTX", color: "#d2531f" },
+  xlsx: { label: "XLSX", color: "#1a7f4b" },
+  merge:    { label: "MERGE",    color: "#0f9b8e" },
+  split:    { label: "SPLIT",    color: "#d2531f" },
+  rotate:   { label: "ROTATE",   color: "#6d5bd0" },
+  compress: { label: "COMPRESS", color: "#0f9b8e" },
 };
 
 export const DEFAULT_TOOL = "word-to-pdf";
