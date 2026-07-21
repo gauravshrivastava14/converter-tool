@@ -200,6 +200,21 @@ export const TOOLS = {
       { id: "text", label: "Watermark text", type: "text", default: "CONFIDENTIAL" },
     ],
   },
+  "edit-pdf": {
+    label: "Edit PDF",
+    hero_title: "Edit PDF",
+    tagline: "Add text, images, and freehand signatures anywhere on a PDF, then save it &mdash; " +
+             "like a lightweight Fill &amp; Sign, entirely in your browser.",
+    short_desc: "Add text, images, and signatures directly onto a PDF.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    from_fmt: "pdf",
+    to_fmt: "edit",
+    button_label: "Select a PDF File",
+    drop_hint: "or drop a single .pdf file here",
+    meta_description: "Add text, images, and signatures to a PDF for free, right in your browser. No uploads, no sign-up, no limits.",
+    custom: true,
+  },
 };
 
 // Colors double as each tool card's format badges - kept close to each
@@ -219,6 +234,7 @@ export const FORMATS = {
   image:     { label: "JPG",       color: "#0891b2" },
   numbers:   { label: "PAGE #",    color: "#b45309" },
   watermark: { label: "WATERMARK", color: "#9333ea" },
+  edit:      { label: "EDIT",      color: "#0e7490" },
 };
 
 export const DEFAULT_TOOL = "word-to-pdf";

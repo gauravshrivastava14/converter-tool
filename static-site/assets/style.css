@@ -518,6 +518,87 @@ img, svg { display: block; max-width: 100%; }
 .feature h3 { font-size: 14.5px; margin-bottom: 6px; color: var(--text); font-weight: 700; }
 .feature p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
+/* ---------- PDF editor ---------- */
+.editor-shell { display: none; max-width: 1000px; margin: 24px auto 0; padding: 0 20px 60px; }
+.editor-toolbar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 10px 14px; margin-bottom: 10px; position: sticky; top: 68px; z-index: 15;
+  box-shadow: var(--shadow-sm);
+}
+.editor-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-alt); border: 1px solid var(--border); color: var(--text);
+  font-family: inherit; font-size: 13px; font-weight: 700; padding: 9px 13px;
+  border-radius: 9px; cursor: pointer; white-space: nowrap;
+}
+.editor-btn:hover { background: var(--brand-50); border-color: var(--brand-100); color: var(--brand); }
+.editor-btn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+.editor-spacer { flex: 1; }
+.editor-page-count { font-size: 12.5px; color: var(--text-faint); font-weight: 600; white-space: nowrap; }
+.editor-download { padding: 9px 16px; font-size: 13px; flex: none; }
+.editor-hint { text-align: center; color: var(--text-faint); font-size: 12px; margin-bottom: 16px; }
+
+.editor-pages {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  overflow-x: auto; padding: 4px 4px 20px;
+}
+.editor-page {
+  position: relative; flex: none; width: 760px;
+  background: #fff; box-shadow: var(--shadow-md); border-radius: 4px;
+  user-select: none;
+}
+.editor-page canvas.page-bg { display: block; width: 100%; height: auto; pointer-events: none; border-radius: 4px; }
+.editor-page.draw-mode { cursor: crosshair; }
+.editor-page-label {
+  position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.55); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; pointer-events: none;
+}
+
+.pdf-el { position: absolute; z-index: 2; }
+.pdf-el-text {
+  min-width: 40px; width: 220px; padding: 4px 6px; border-radius: 4px;
+  cursor: move; outline: 1px dashed transparent; line-height: 1.25;
+  color: #111; font-family: var(--font); white-space: pre-wrap; overflow-wrap: break-word;
+}
+.pdf-el-text:hover { outline-color: rgba(var(--brand-rgb), .45); }
+.pdf-el-text.selected { outline: 1px dashed var(--brand); }
+.pdf-el-text[contenteditable="true"]:focus { outline: 1px solid var(--brand); cursor: text; background: rgba(255,255,255,.7); }
+
+.pdf-el-image { cursor: move; border: 1px solid transparent; }
+.pdf-el-image.selected { border-color: var(--brand); }
+.pdf-el-image img { width: 100%; height: 100%; display: block; pointer-events: none; }
+
+.pdf-el-draw-svg { position: absolute; inset: 0; overflow: visible; z-index: 2; pointer-events: none; }
+.pdf-el-draw-svg .draw-hit { stroke: transparent; stroke-width: 16; fill: none; pointer-events: stroke; cursor: pointer; }
+.pdf-el-draw-svg .draw-visible { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.pdf-el-draw-svg.selected .draw-visible { stroke-opacity: .85; filter: drop-shadow(0 0 2px rgba(var(--brand-rgb),.8)); }
+
+.pdf-el-controls {
+  position: absolute; display: flex; align-items: center; gap: 2px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 3px; box-shadow: var(--shadow-md); white-space: nowrap; z-index: 3;
+}
+.pdf-el-controls button {
+  border: none; background: none; cursor: pointer; font-size: 12.5px; font-weight: 700;
+  padding: 4px 7px; border-radius: 5px; color: var(--text); font-family: inherit;
+}
+.pdf-el-controls button:hover { background: var(--brand-50); color: var(--brand); }
+.pdf-el-controls button.el-delete:hover { background: var(--danger-light); color: var(--danger); }
+.pdf-el-controls input[type="color"] {
+  width: 22px; height: 22px; border: none; padding: 0; background: none; cursor: pointer; border-radius: 5px;
+}
+
+.pdf-el-resize {
+  position: absolute; right: -6px; bottom: -6px; width: 13px; height: 13px;
+  background: var(--brand); border: 2px solid #fff; border-radius: 50%; cursor: nwse-resize; z-index: 3;
+}
+
+@media (max-width: 640px) {
+  .editor-toolbar { position: static; }
+  .editor-page { width: 640px; }
+}
+
 /* ---------- Comparison table ---------- */
 .compare-table {
   display: grid; border: 1px solid var(--border); border-radius: 16px;

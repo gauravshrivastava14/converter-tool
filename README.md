@@ -16,7 +16,7 @@ The project ships two implementations of the same idea, built at different times
 
 ## Tools
 
-All 12 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
+All 13 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
 
 | Tool | Route | What it does |
 |---|---|---|
@@ -32,15 +32,18 @@ All 12 tools live at their own route (e.g. `/word-to-pdf/`) and share one page s
 | PDF to JPG | `/pdf-to-jpg/` | Every PDF page → a high-resolution JPG |
 | Add Page Numbers | `/page-numbers-pdf/` | Stamp page numbers at a chosen corner and starting count |
 | Watermark PDF | `/watermark-pdf/` | Stamp a diagonal text watermark across every page |
+| Edit PDF | `/edit-pdf/` | Add text, images, and freehand signatures anywhere on a page - a lightweight Fill & Sign |
 
 A few of these are genuinely uncommon as *free* features elsewhere — reordering files before merging, custom page-range splitting, and unlimited batch conversion are usually paywalled on other "free" converters. They're free here because there's no server cost to gate: your browser does the work.
+
+**A note on Edit PDF specifically:** it adds new content on top of a page (text boxes, images, freehand strokes), it doesn't rewrite a PDF's *existing* text - reliably detecting and reflowing already-laid-out PDF text in-browser isn't realistically achievable, and every other free "PDF editor" that claims to do this is doing the same overlay trick under the hood. It renders each page via pdf.js at a fixed coordinate scale, lets you place/drag/resize elements as normal DOM nodes, then converts those screen coordinates back to PDF points and bakes them into a fresh copy of the original bytes via pdf-lib on save - the rendered pages themselves are only ever a visual guide.
 
 ## How the static site works
 
 There's no build step and no backend. Every conversion runs client-side, in the tab, using libraries loaded on demand from a CDN:
 
-- **pdf.js** — reads/rasterizes PDF pages for PDF → Word, PDF → PPT, and PDF → JPG
-- **pdf-lib** — merge / split / rotate / compress / watermark / page numbers / images → PDF
+- **pdf.js** — reads/rasterizes PDF pages for PDF → Word, PDF → PPT, PDF → JPG, and as the visual guide for Edit PDF
+- **pdf-lib** — merge / split / rotate / compress / watermark / page numbers / images → PDF / Edit PDF
 - **mammoth.js + pdfmake** — Word → PDF (docx → semantic HTML → PDF)
 - **docx** — rebuilds an editable Word document for PDF → Word
 - **pptxgenjs** — builds the `.pptx` for PDF → PPT
@@ -51,7 +54,7 @@ Because nothing is uploaded, there's no server cost, no upload size limit beside
 Shared UI code lives in `static-site/assets/`:
 - `tools.js` — single source of truth for each tool's copy, extensions, format badges, and options (e.g. rotate angle, watermark text)
 - `ui.js` — shared dropzone/progress/results controller for the standard 1-in/1-out tools, including per-tool option controls
-- `pages/` — custom controllers for tools that aren't 1-in/1-out: Merge and Images-to-PDF (N-in/1-out, with reordering), Split and PDF-to-JPG (1-in/N-out, zipped)
+- `pages/` — custom controllers for tools that aren't 1-in/1-out: Merge and Images-to-PDF (N-in/1-out, with reordering), Split and PDF-to-JPG (1-in/N-out, zipped), and Edit PDF (its own interactive canvas)
 - `theme.js` — dark/light toggle (persisted, respects OS preference) and mobile nav
 - `pdfjs-loader.js` — pins pdf.js's main build and worker to the same, cross-browser-compatible version
 
