@@ -125,6 +125,81 @@ export const TOOLS = {
     drop_hint: "or drop .pdf files here &mdash; multiple allowed",
     meta_description: "Compress PDF files to reduce size for free, right in your browser. No uploads, no sign-up, no limits.",
   },
+  "images-to-pdf": {
+    label: "Images to PDF",
+    hero_title: "Images to PDF",
+    tagline: "Combine JPG and PNG photos into a single PDF &mdash; reorder them first, each " +
+             "one scaled neatly onto its own page, entirely in your browser.",
+    short_desc: "Turn a batch of photos into one clean PDF.",
+    input_exts: [".jpg", ".jpeg", ".png"],
+    output_ext: ".pdf",
+    from_fmt: "image",
+    to_fmt: "pdf",
+    button_label: "Select Images",
+    drop_hint: "or drop 1+ .jpg / .png files here",
+    meta_description: "Convert JPG and PNG images into a single PDF for free, right in your browser. No uploads, no sign-up, no limits.",
+    custom: true,
+  },
+  "pdf-to-jpg": {
+    label: "PDF to JPG",
+    hero_title: "PDF to JPG",
+    tagline: "Turn every page of a PDF into a high-resolution JPG image &mdash; download them " +
+             "individually or as a ZIP, entirely in your browser.",
+    short_desc: "Export every PDF page as a sharp JPG image.",
+    input_exts: [".pdf"],
+    output_ext: ".jpg",
+    from_fmt: "pdf",
+    to_fmt: "image",
+    button_label: "Select a PDF File",
+    drop_hint: "or drop a single .pdf file here",
+    meta_description: "Convert PDF pages to JPG images for free, right in your browser. No uploads, no sign-up, no limits.",
+    custom: true,
+  },
+  "page-numbers-pdf": {
+    label: "Add Page Numbers",
+    hero_title: "Add Page Numbers",
+    tagline: "Stamp page numbers onto every page of your PDFs &mdash; pick the position and " +
+             "starting number, entirely in your browser.",
+    short_desc: "Stamp page numbers onto every page, your way.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    output_suffix: "-numbered",
+    from_fmt: "pdf",
+    to_fmt: "numbers",
+    button_label: "Select PDF Files",
+    drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Add page numbers to PDF files for free, right in your browser. No uploads, no sign-up, no limits.",
+    options: [
+      {
+        id: "position", label: "Position", default: "bottom-center",
+        choices: [
+          { value: "bottom-center", label: "Bottom center" },
+          { value: "bottom-right", label: "Bottom right" },
+          { value: "top-center", label: "Top center" },
+          { value: "top-right", label: "Top right" },
+        ],
+      },
+      { id: "start", label: "Start at", type: "number", default: "1" },
+    ],
+  },
+  "watermark-pdf": {
+    label: "Watermark PDF",
+    hero_title: "Watermark PDF",
+    tagline: "Stamp a diagonal text watermark across every page &mdash; handy for marking drafts " +
+             "or confidential copies, entirely in your browser.",
+    short_desc: "Stamp a custom text watermark across every page.",
+    input_exts: [".pdf"],
+    output_ext: ".pdf",
+    output_suffix: "-watermarked",
+    from_fmt: "pdf",
+    to_fmt: "watermark",
+    button_label: "Select PDF Files",
+    drop_hint: "or drop .pdf files here &mdash; multiple allowed",
+    meta_description: "Add a text watermark to PDF files for free, right in your browser. No uploads, no sign-up, no limits.",
+    options: [
+      { id: "text", label: "Watermark text", type: "text", default: "CONFIDENTIAL" },
+    ],
+  },
 };
 
 // Colors double as each tool card's format badges - kept close to each
@@ -137,10 +212,13 @@ export const FORMATS = {
   pdf:  { label: "PDF",  color: "#e5322d" },
   pptx: { label: "PPTX", color: "#d2531f" },
   xlsx: { label: "XLSX", color: "#1a7f4b" },
-  merge:    { label: "MERGE",    color: "#0f9b8e" },
-  split:    { label: "SPLIT",    color: "#d2531f" },
-  rotate:   { label: "ROTATE",   color: "#6d5bd0" },
-  compress: { label: "COMPRESS", color: "#0f9b8e" },
+  merge:     { label: "MERGE",     color: "#0f9b8e" },
+  split:     { label: "SPLIT",     color: "#d2531f" },
+  rotate:    { label: "ROTATE",    color: "#6d5bd0" },
+  compress:  { label: "COMPRESS",  color: "#0f9b8e" },
+  image:     { label: "JPG",       color: "#0891b2" },
+  numbers:   { label: "PAGE #",    color: "#b45309" },
+  watermark: { label: "WATERMARK", color: "#9333ea" },
 };
 
 export const DEFAULT_TOOL = "word-to-pdf";

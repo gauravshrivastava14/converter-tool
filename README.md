@@ -1,6 +1,6 @@
 # PDFSetu
 
-**Setu** (सेतु) is Hindi/Sanskrit for *bridge* — PDFSetu is a free bridge between file formats: PDF, Word, PowerPoint, and Excel, converted back and forth without ever leaving your device.
+**Setu** (सेतु) is Hindi/Sanskrit for *bridge* — PDFSetu is a free bridge between file formats and a full PDF toolkit: convert, merge, split, rotate, compress, watermark, and more, without ever leaving your device.
 
 The project ships two implementations of the same idea, built at different times:
 
@@ -16,7 +16,7 @@ The project ships two implementations of the same idea, built at different times
 
 ## Tools
 
-All 8 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
+All 12 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
 
 | Tool | Route | What it does |
 |---|---|---|
@@ -25,29 +25,35 @@ All 8 tools live at their own route (e.g. `/word-to-pdf/`) and share one page sh
 | PDF to PPT | `/pdf-to-ppt/` | Each PDF page → a full-slide image on its own slide |
 | PPT to Excel | `/ppt-to-excel/` | One row per slide (title + content) into `.xlsx` |
 | Merge PDF | `/merge-pdf/` | Combine PDFs into one, reorder before merging |
-| Split PDF | `/split-pdf/` | Every page as its own PDF, or custom page ranges |
+| Split PDF | `/split-pdf/` | Every page as its own PDF, or custom page ranges (e.g. `1-3, 5, 8-10`) |
 | Rotate PDF | `/rotate-pdf/` | Rotate every page 90°/180°/270° |
-| Compress PDF | `/compress-pdf/` | Shrink file size losslessly |
+| Compress PDF | `/compress-pdf/` | Shrink file size losslessly (never returns a bigger file) |
+| Images to PDF | `/images-to-pdf/` | Combine JPG/PNG photos into one PDF, reorder before combining |
+| PDF to JPG | `/pdf-to-jpg/` | Every PDF page → a high-resolution JPG |
+| Add Page Numbers | `/page-numbers-pdf/` | Stamp page numbers at a chosen corner and starting count |
+| Watermark PDF | `/watermark-pdf/` | Stamp a diagonal text watermark across every page |
+
+A few of these are genuinely uncommon as *free* features elsewhere — reordering files before merging, custom page-range splitting, and unlimited batch conversion are usually paywalled on other "free" converters. They're free here because there's no server cost to gate: your browser does the work.
 
 ## How the static site works
 
 There's no build step and no backend. Every conversion runs client-side, in the tab, using libraries loaded on demand from a CDN:
 
-- **pdf.js** — reads PDF pages/text for PDF → Word and PDF → PPT
-- **pdf-lib** — merge / split / rotate / compress
+- **pdf.js** — reads/rasterizes PDF pages for PDF → Word, PDF → PPT, and PDF → JPG
+- **pdf-lib** — merge / split / rotate / compress / watermark / page numbers / images → PDF
 - **mammoth.js + pdfmake** — Word → PDF (docx → semantic HTML → PDF)
 - **docx** — rebuilds an editable Word document for PDF → Word
 - **pptxgenjs** — builds the `.pptx` for PDF → PPT
-- **JSZip / ExcelJS** — reads `.pptx` XML and writes `.xlsx` for PPT → Excel
+- **JSZip / ExcelJS** — reads `.pptx` XML and writes `.xlsx` for PPT → Excel; JSZip also bundles multi-file downloads (split pages, exported JPGs) into one ZIP
 
 Because nothing is uploaded, there's no server cost, no upload size limit besides the browser's own memory, and it works on any OS.
 
 Shared UI code lives in `static-site/assets/`:
-- `tools.js` — single source of truth for each tool's copy, extensions, and options
-- `ui.js` — shared dropzone/progress/results controller for the standard 1-in/1-out tools
-- `pages/` — custom controllers for merge & split (N-in/1-out and 1-in/N-out don't fit the shared flow)
-- `theme.js` — dark/light toggle and mobile nav
-- `pdfjs-loader.js` — pins pdf.js's main build and worker to the same version
+- `tools.js` — single source of truth for each tool's copy, extensions, format badges, and options (e.g. rotate angle, watermark text)
+- `ui.js` — shared dropzone/progress/results controller for the standard 1-in/1-out tools, including per-tool option controls
+- `pages/` — custom controllers for tools that aren't 1-in/1-out: Merge and Images-to-PDF (N-in/1-out, with reordering), Split and PDF-to-JPG (1-in/N-out, zipped)
+- `theme.js` — dark/light toggle (persisted, respects OS preference) and mobile nav
+- `pdfjs-loader.js` — pins pdf.js's main build and worker to the same, cross-browser-compatible version
 
 ### Running it locally
 
@@ -76,4 +82,4 @@ Or on Windows, just double-click `start.bat`.
 
 ## Privacy
 
-No file is ever uploaded to a server. The static site converts entirely inside your browser tab; the legacy app keeps everything on your own PC. No sign-up, no accounts, no tracking of file contents.
+No file is ever uploaded to a server. The static site converts entirely inside your browser tab; the legacy app keeps everything on your own PC. No sign-up, no accounts, no tracking of file contents, no daily conversion limits.

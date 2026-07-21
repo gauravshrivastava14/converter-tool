@@ -74,16 +74,27 @@ if (optionsBox && tool.options) {
     field.className = 'opt-field';
     const span = document.createElement('span');
     span.textContent = opt.label;
-    const select = document.createElement('select');
-    select.dataset.optId = opt.id;
-    opt.choices.forEach(c => {
-      const o = document.createElement('option');
-      o.value = c.value;
-      o.textContent = c.label;
-      if (c.value === opt.default) o.selected = true;
-      select.appendChild(o);
-    });
-    field.append(span, select);
+
+    let control;
+    if (opt.type === 'text' || opt.type === 'number') {
+      control = document.createElement('input');
+      control.type = opt.type;
+      control.className = 'opt-input';
+      control.value = opt.default ?? '';
+      if (opt.type === 'number') { control.min = '1'; control.step = '1'; }
+    } else {
+      control = document.createElement('select');
+      opt.choices.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.value;
+        o.textContent = c.label;
+        if (c.value === opt.default) o.selected = true;
+        control.appendChild(o);
+      });
+    }
+    control.dataset.optId = opt.id;
+
+    field.append(span, control);
     optionsBox.appendChild(field);
   });
   optionsBox.style.display = 'flex';

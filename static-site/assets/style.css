@@ -293,6 +293,14 @@ img, svg { display: block; max-width: 100%; }
   background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px;
   padding: 7px 10px; cursor: pointer;
 }
+.opt-input {
+  font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text);
+  background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px;
+}
+.opt-input:focus { outline: none; border-color: var(--brand); }
+.opt-input[type="number"] { width: 70px; }
+.opt-input[type="text"] { width: 200px; }
 
 /* ---------- Split: mode picker ---------- */
 .split-options {
