@@ -403,10 +403,11 @@ function wrapPlainText(ctx, text, maxWidth) {
 function renderSp(ctx, spEl, ctm, theme, layoutSpTree, masterSpTree) {
   const ph = getPh(spEl);
   let raw = getShapeXfrmRaw(spEl);
-  if (!raw && ph) {
-    const inherited = findPlaceholderShape(layoutSpTree, ph) || findPlaceholderShape(masterSpTree, ph);
-    raw = getShapeXfrmRaw(inherited);
-  }
+  // A placeholder's own layout shape often has no xfrm either (e.g. a
+  // "Title and Content" layout that itself inherits from the master) - each
+  // level is tried in turn rather than stopping at the first shape found.
+  if (!raw && ph) raw = getShapeXfrmRaw(findPlaceholderShape(layoutSpTree, ph));
+  if (!raw && ph) raw = getShapeXfrmRaw(findPlaceholderShape(masterSpTree, ph));
   if (!raw) return;
 
   const abs = ctmPoint(ctm, raw.x, raw.y);
