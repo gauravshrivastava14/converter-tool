@@ -16,12 +16,13 @@ The project ships two implementations of the same idea, built at different times
 
 ## Tools
 
-All 13 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
+All 14 tools live at their own route (e.g. `/word-to-pdf/`) and share one page shell (`assets/bootstrap.js` + `assets/tools.js`):
 
 | Tool | Route | What it does |
 |---|---|---|
 | Word to PDF | `/word-to-pdf/` | `.docx`/`.docm` → PDF |
 | PDF to Word | `/pdf-to-word/` | PDF → editable `.docx` |
+| PPT to PDF | `/ppt-to-pdf/` | `.pptx`/`.pptm` → PDF, one page per slide |
 | PDF to PPT | `/pdf-to-ppt/` | Each PDF page → a full-slide image on its own slide |
 | PPT to Excel | `/ppt-to-excel/` | One row per slide (title + content) into `.xlsx` |
 | Merge PDF | `/merge-pdf/` | Combine PDFs into one, reorder before merging |
@@ -43,11 +44,12 @@ A few of these are genuinely uncommon as *free* features elsewhere — reorderin
 There's no build step and no backend. Every conversion runs client-side, in the tab, using libraries loaded on demand from a CDN:
 
 - **pdf.js** — reads/rasterizes PDF pages for PDF → Word, PDF → PPT, PDF → JPG, and as the visual guide for Edit PDF
-- **pdf-lib** — merge / split / rotate / compress / watermark / page numbers / images → PDF / Edit PDF
+- **pdf-lib** — merge / split / rotate / compress / watermark / page numbers / images → PDF / Edit PDF, and to assemble the PDF for PPT → PDF
 - **mammoth.js + pdfmake** — Word → PDF (docx → semantic HTML → PDF)
 - **docx** — rebuilds an editable Word document for PDF → Word
 - **pptxgenjs** — builds the `.pptx` for PDF → PPT
-- **JSZip / ExcelJS** — reads `.pptx` XML and writes `.xlsx` for PPT → Excel; JSZip also bundles multi-file downloads (split pages, exported JPGs) into one ZIP
+- **JSZip** — reads `.pptx` XML directly for PPT → Excel and PPT → PDF (no server-side Office available in a browser tab, so each slide's shapes/text/images/theme colors are parsed from the OOXML and, for PPT → PDF, rasterized onto a canvas that becomes one PDF page); also bundles multi-file downloads (split pages, exported JPGs) into one ZIP
+- **ExcelJS** — writes the `.xlsx` for PPT → Excel
 
 Because nothing is uploaded, there's no server cost, no upload size limit besides the browser's own memory, and it works on any OS.
 

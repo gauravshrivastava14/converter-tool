@@ -27,6 +27,20 @@ export const TOOLS = {
     drop_hint: "or drop .pdf files here &mdash; multiple allowed",
     meta_description: "Convert PDF files to editable Word documents (.docx) for free, right in your browser. No uploads, no sign-up, no limits.",
   },
+  "ppt-to-pdf": {
+    label: "PPT to PDF",
+    hero_title: "PPT to PDF",
+    tagline: "Select multiple PowerPoint presentations and convert them all to PDF in one go " +
+             "&mdash; fast, free, and entirely in your browser. Your files never leave your device.",
+    short_desc: "Turn PowerPoint slides into shareable, print-ready PDFs.",
+    input_exts: [".pptx", ".pptm"],
+    output_ext: ".pdf",
+    from_fmt: "pptx",
+    to_fmt: "pdf",
+    button_label: "Select PPT Files",
+    drop_hint: "or drop .pptx / .pptm files here &mdash; multiple allowed",
+    meta_description: "Convert PowerPoint presentations (.pptx) to PDF for free, right in your browser. No uploads, no sign-up, no limits.",
+  },
   "pdf-to-ppt": {
     label: "PDF to PPT",
     hero_title: "PDF to PPT",
