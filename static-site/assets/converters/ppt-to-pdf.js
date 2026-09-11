@@ -324,6 +324,13 @@ function drawTextBody(ctx, spEl, boxW, boxH, theme, ph) {
   }
 
   const isTitle = !!(ph && (ph.type === 'title' || ph.type === 'ctrTitle'));
+  // PowerPoint only writes <a:buChar>/<a:buAutoNum> when someone customizes
+  // the bullet - the common case (default bullets on a body/content
+  // placeholder) has no per-paragraph marker at all, so it's inferred here
+  // from the placeholder type instead, same as PowerPoint's own list styles.
+  const NON_BULLETED_PH_TYPES = new Set(['title', 'ctrTitle', 'subTitle', 'pic', 'chart', 'tbl', 'dt', 'ftr', 'sldNum', 'media']);
+  const isBodyPh = !!(ph && !NON_BULLETED_PH_TYPES.has(ph.type));
+  const numCounters = [0, 0, 0, 0, 0];
   const innerW = Math.max(1, boxW - lIns - rIns);
 
   const laidOutLines = [];
@@ -332,8 +339,22 @@ function drawTextBody(ctx, spEl, boxW, boxH, theme, ph) {
     const align = ALIGN_MAP[pPr && pPr.getAttribute('algn')] || 'left';
     const lvl = pPr && pPr.hasAttribute('lvl') ? Math.min(4, +pPr.getAttribute('lvl')) : 0;
     const indent = lvl * 14;
-    const buChar = pPr && directChild(pPr, 'a:buChar');
-    const bulletChar = buChar && !directChild(pPr, 'a:buNone') ? (buChar.getAttribute('char') || '•') : null;
+
+    const buNone = pPr && directChild(pPr, 'a:buNone');
+    const buCharEl = pPr && directChild(pPr, 'a:buChar');
+    const buAutoNumEl = pPr && directChild(pPr, 'a:buAutoNum');
+    let bulletChar = null;
+    if (!buNone) {
+      if (buCharEl) {
+        bulletChar = buCharEl.getAttribute('char') || '•';
+      } else if (buAutoNumEl) {
+        numCounters[lvl] += 1;
+        for (let l = lvl + 1; l < numCounters.length; l++) numCounters[l] = 0;
+        bulletChar = `${numCounters[lvl]}.`;
+      } else if (isBodyPh) {
+        bulletChar = lvl === 0 ? '•' : '–';
+      }
+    }
 
     const runs = [];
     Array.from(pEl.children).forEach(child => {
@@ -627,42 +648,50 @@ async function renderChildren(ctx, treeEl, ctm, theme, zip, slideRels, layoutSpT
 
 // ---- slide master/layout/theme resolution (cached per file, shared by every slide) ----
 
+// Most slides in a deck reuse a handful of layouts, so the whole resolved
+// {layoutDoc, masterDoc, theme} tuple is cached per layout path - otherwise
+// every slide would re-read and re-parse its layout's and master's .rels
+// files even when nothing about the ancestry actually changed.
 async function resolveAncestry(zip, layoutPath, cache) {
   if (!layoutPath) return { layoutDoc: null, masterDoc: null, theme: DEFAULT_THEME };
+  if (cache.ancestry.has(layoutPath)) return cache.ancestry.get(layoutPath);
 
-  if (!cache.layouts.has(layoutPath)) {
-    const f = zip.file(layoutPath);
-    cache.layouts.set(layoutPath, f ? parseXml(await f.async('string')) : null);
-  }
-  const layoutDoc = cache.layouts.get(layoutPath);
+  const layoutFile = zip.file(layoutPath);
+  const layoutDoc = layoutFile ? parseXml(await layoutFile.async('string')) : null;
 
   const layoutRels = await loadRelsMap(zip, layoutPath);
   const masterPath = findRelByTypeSuffix(layoutRels, '/slideMaster')?.target;
-  if (!masterPath) return { layoutDoc, masterDoc: null, theme: DEFAULT_THEME };
 
-  if (!cache.masters.has(masterPath)) {
-    const f = zip.file(masterPath);
-    cache.masters.set(masterPath, f ? parseXml(await f.async('string')) : null);
+  let masterDoc = null, theme = DEFAULT_THEME;
+  if (masterPath) {
+    const masterFile = zip.file(masterPath);
+    masterDoc = masterFile ? parseXml(await masterFile.async('string')) : null;
+
+    const masterRels = await loadRelsMap(zip, masterPath);
+    const themePath = findRelByTypeSuffix(masterRels, '/theme')?.target;
+    if (themePath) {
+      const themeFile = zip.file(themePath);
+      theme = themeFile ? parseTheme(parseXml(await themeFile.async('string'))) : DEFAULT_THEME;
+    }
   }
-  const masterDoc = cache.masters.get(masterPath);
 
-  const masterRels = await loadRelsMap(zip, masterPath);
-  const themePath = findRelByTypeSuffix(masterRels, '/theme')?.target;
-  if (themePath && !cache.themes.has(themePath)) {
-    const f = zip.file(themePath);
-    cache.themes.set(themePath, f ? parseTheme(parseXml(await f.async('string'))) : DEFAULT_THEME);
-  }
-  const theme = themePath ? cache.themes.get(themePath) : DEFAULT_THEME;
-
-  return { layoutDoc, masterDoc, theme };
+  const resolved = { layoutDoc, masterDoc, theme };
+  cache.ancestry.set(layoutPath, resolved);
+  return resolved;
 }
 
-function canvasToPngBytes(canvas) {
+// JPEG rather than PNG: pdf-lib embeds a JPEG's already-compressed bytes
+// almost as-is, but for PNG it decodes to raw pixels and re-deflates them at
+// save() time - for a full slide raster that round-trip dominates total
+// conversion time far more than the rendering itself does. No shape here
+// ever needs transparency (the background is always painted first), so
+// there's no quality reason to keep PNG's alpha support.
+function canvasToJpegBytes(canvas) {
   return new Promise((resolve, reject) => {
     canvas.toBlob(blob => {
       if (!blob) { reject(new Error('Could not render this slide')); return; }
       blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf)));
-    }, 'image/png');
+    }, 'image/jpeg', 0.92);
   });
 }
 
@@ -701,7 +730,7 @@ export async function convert(file) {
   const pageH = emuToPt(sldSzEl ? +sldSzEl.getAttribute('cy') : 6858000);
 
   const pdf = await PDFDocument.create();
-  const cache = { layouts: new Map(), masters: new Map(), themes: new Map() };
+  const cache = { ancestry: new Map() };
 
   for (const slidePath of slidePaths) {
     const slideFile = zip.file(slidePath);
@@ -729,13 +758,13 @@ export async function convert(file) {
       await renderChildren(ctx, spTree, rootCtm, theme, zip, slideRels, layoutSpTree, masterSpTree);
     }
 
-    const pngBytes = await canvasToPngBytes(canvas);
+    const jpegBytes = await canvasToJpegBytes(canvas);
     canvas.width = 0; // release the backing buffer before moving to the next slide
     canvas.height = 0;
 
-    const pngImage = await pdf.embedPng(pngBytes);
+    const slideImage = await pdf.embedJpg(jpegBytes);
     const page = pdf.addPage([pageW, pageH]);
-    page.drawImage(pngImage, { x: 0, y: 0, width: pageW, height: pageH });
+    page.drawImage(slideImage, { x: 0, y: 0, width: pageW, height: pageH });
   }
 
   const out = await pdf.save();
